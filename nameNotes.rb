@@ -27,7 +27,8 @@ def checkAnswer ans
 
 end
 
+string = ["E","A","D","G","B"].sample #sample chooses a random string from the array.
+puts string
 
-
-noteQuestion = randomPosition()
-checkAnswer(noteQuestion)
+#noteQuestion = randomPosition()
+#checkAnswer(noteQuestion)
