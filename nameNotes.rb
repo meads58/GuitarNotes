@@ -1,5 +1,4 @@
-#what note is on the fret x, of string x?
-
+#GuitarNotes creates a guitar fretboard for 1 octave.
 class GuitarNotes
     def initialize
         @noteHash = Hash.new
@@ -35,7 +34,7 @@ class GuitarNotes
         return @noteHash
     end
 
-#orders the noteArray to start on the correct note per string
+#orders the noteArray to start on the correct note per string e.g. EADGBE
     def noteRotate(rotateAmount,fret)
         note = @noteArray.rotate(rotateAmount)
         fret_s = fret.to_s
@@ -46,34 +45,51 @@ class GuitarNotes
 
 end
 
+#Game which uses the fretboard to test you note knowledge.
 class NoteGame < GuitarNotes
-    def initalize
+    def initialize
         super
-        @gameBoard = Hash.new
+        @gameBoard = labelNotes
         @ans = 'play'
+        @pos = String.new
+        @score = 0
+        
     end
 
 #Generates a random fret string position
     def randomPosition
-        @gameBoard = labelNotes
+        #@gameBoard = labelNotes
         randHash =  rand(1..6).to_s + rand(1..12).to_s
         return randHash
     end
 
-def ordinalize(n)
+    def ordinalize(n)
     n.to_s+%w{th st nd rd}[n/10%10==1||n%10>3?0:n%10]
     end    
-    
+
+#Formats the string note selected into a question format.    
     def formatFretString(strFrt)
-        pos = randomPosition.to_s
-        string = ordinalize(pos.slice(0).to_i)
-        fret = ordinalize(pos.slice(1..-1).to_i)
+        @pos = randomPosition.to_s
+        #puts @gameBoard[@pos] #uncomment to see the answers
+        string = ordinalize(@pos.slice(0).to_i)
+        fret = ordinalize(@pos.slice(1..-1).to_i)
         
         return "What is the note on the #{fret} fret of the #{string} string? "
      end
-     
+ 
+    def checkAnswer(userResponse)   
+        if userResponse.upcase ==  @gameBoard[@pos]
+            @score += 1
+            return "Correct"
+        else
+            return "Incorrect, that note is #{@gameBoard[@pos]}" 
+        end    
+    end 
+
+#How to run the game.     
     def main
         x = nil
+        counter = 0
         welcome = 'Play the game or type exit to quit' 
         puts welcome
         until @ans == 'exit'
@@ -81,25 +97,17 @@ def ordinalize(n)
             puts formatFretString(randomPosition) 
             @ans = gets.chomp
             x = rand(3)
+            puts checkAnswer(@ans)
+            counter += 1
+             
         end
+        puts "you got #{@score} correct from #{counter - 1} questions attempted"
     end
 
-def checkAnswer ans
 
-    if @noteHash.has_key?(ans) then
-        puts @noteHash[ans]
-    end
-
-end
 end
 
 gat = NoteGame.new
-#gat.createFretBoard
 puts gat.main
 
 
-#string = ["E","A","D","G","B"].sample #sample chooses a random string from the array.
-#puts string
-
-#noteQuestion = randomPosition()
-#checkAnswer(noteQuestion)
